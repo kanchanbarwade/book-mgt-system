@@ -1,21 +1,29 @@
-const BOOK_KEY = 'books';
+import { BOOK_API } from '../constant/apiconstant';
+import axiosInstance from '../utils/axiosInstance';
 
-export const getBooks = () => JSON.parse(localStorage.getItem(BOOK_KEY)) || [];
+const BASE_URL = BOOK_API.BOOK;
 
-export const addBook = (book) => {
-  const books = getBooks();
-  books.push(book);
-  localStorage.setItem(BOOK_KEY, JSON.stringify(books));
+export const getBooks = async () => {
+  const res = await axiosInstance.get(BASE_URL);
+  return res.data;
 };
 
-export const deleteBook = (isbn) => {
-  const books = getBooks().filter(b => b.isbn !== isbn);
-  localStorage.setItem(BOOK_KEY, JSON.stringify(books));
+export const getBookByIsbn = async (isbn) => {
+  const res = await axiosInstance.get(`${BASE_URL}/isbn/${isbn}`);
+  return res.data;
 };
 
-export const getBookById = (isbn) => getBooks().find(b => b.isbn === isbn);
+export const addBook = async (book) => {
+  const res = await axiosInstance.post(BASE_URL, book);
+  return res.data;
+};
 
-export const updateBook = (updatedBook) => {
-  const books = getBooks().map(b => b.isbn === updatedBook.isbn ? updatedBook : b);
-  localStorage.setItem(BOOK_KEY, JSON.stringify(books));
+export const updateBook = async (isbn, book) => {
+  const res = await axiosInstance.put(`${BASE_URL}/isbn/${isbn}`, book);
+  return res.data;
+};
+
+export const deleteBook = async (isbn) => {
+  const res = await axiosInstance.delete(`${BASE_URL}/isbn/${isbn}`);
+  return res.data;
 };
